@@ -1,11 +1,35 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Quiz</title>
-    <link href="style.css" rel="stylesheet" />
-    <script src="script.js" defer></script>
-  </head>
-  <body></body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Quiz</title>
+        <link href="style.css" rel="stylesheet" />
+        <script src="script.js" defer></script>
+    </head>
+    <body>
+        <div id="start-container">
+            <button class="start-btn" onclick="start(this)">Start</button>
+        </div>
+        <div id="game">
+            <div class="title-container">
+                <h2 id="title">Title</h2>
+                <div id="timer">
+                    <h2 id="timer-count">15</h2>
+                </div>
+            </div>
+            <div class="item-centered">
+                <img alt="flag" id="flag" />
+            </div>
+            <div id="countdown-bar-container">
+                <div id="countdown-bar"></div>
+            </div>
+            <div id="option-container">
+                <button id="option-1">Option 1</button>
+                <button id="option-2">Option 2</button>
+                <button id="option-3">Option 3</button>
+                <button id="option-4">Option 4</button>
+            </div>
+        </div>
+    </body>
 </html>
