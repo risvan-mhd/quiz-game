@@ -9,22 +9,52 @@ const shuffle = (array) =>
             array,
         ))([...array]);
 
-const load_data = async () =>
+const loadData = async () =>
     (await fetch("./quiz/country_by_flag.json")).json();
 
-const reveal = (optionContainer) => {
-    optionContainer.classList.add("revealed");
+const showModal = (title, message) => {
+    $("#modal-title").innerText = title;
+    $("#modal-message").innerText = message;
+    $("#modal").showModal();
 };
 
-const start = async (caller) => {
-    caller && (caller.disabled = true);
+const hideModal = () => $("#modal").close();
 
-    const data = await load_data();
-    const questions = data.questions.slice(0, 10);
+const reveal = (optionContainer, correct, answer) => {
+    optionContainer.classList.add("revealed");
 
-    $("#title").innerText = data.title;
+    setTimeout(() => {
+        const title = correct ? "Congrates" : "Oops";
+        const message = `The country is ${answer}`;
+        showModal(title, message);
+    }, 100);
+};
+
+const useStorage = (key, defaultValue) => [
+    (value) => localStorage.setItem(key, JSON.stringify(value)),
+    () => JSON.parse(localStorage.getItem(key)) || defaultValue,
+];
+
+const [setQuestions, getQuestions] = useStorage("questions");
+const [setLevel, getLevel] = useStorage("level", 0);
+
+const nextQuestion = () => {
+    const nextLevel = Math.min(getLevel() + 1, getQuestions().length - 1);
+    console.log(nextLevel);
+    setLevel(nextLevel);
+    loadQuestion();
+};
+
+const loadQuestion = () => {
     const optionContainer = $("#option-container");
-    const options = shuffle(questions[0].options);
+    optionContainer.classList.remove("revealed");
+
+    const level = getLevel();
+    const questions = getQuestions();
+    const question = questions[level];
+
+    const answer = question.options.find((option) => option.correct)?.text;
+    const options = shuffle(question.options);
     options.forEach((option, i) => {
         const button = $(`#option-${i + 1}`);
         const className = option.correct ? "correct" : "incorrect";
@@ -32,7 +62,7 @@ const start = async (caller) => {
         button.className = "";
         button.innerText = option.text;
         button.classList.add(className);
-        button.onclick = () => reveal(optionContainer);
+        button.onclick = () => reveal(optionContainer, option.correct, answer);
     });
 
     const flag = $("#flag");
@@ -63,10 +93,22 @@ const start = async (caller) => {
             const expired = progress >= 1;
             const revealed = optionContainer.classList.contains("revealed");
             !expired && !revealed && requestAnimationFrame(tick);
-            expired && reveal(optionContainer);
+            expired && reveal(optionContainer, false, answer);
         };
 
         requestAnimationFrame(tick);
+        hideModal();
     };
-    flag.src = questions[0].flag;
+    flag.src = question.flag;
+};
+
+const start = async (caller) => {
+    caller && (caller.disabled = true);
+
+    const data = await loadData();
+    const questions = data.questions;
+
+    $("#title").innerText = data.title;
+    setQuestions(questions);
+    getLevel() < questions.length && loadQuestion();
 };

@@ -39,6 +39,10 @@ button {
         opacity 0.15s ease;
 }
 
+button.success {
+    background: #00ff0d;
+}
+
 button:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 18px rgba(0, 213, 255, 0.35);
@@ -117,15 +121,6 @@ button:disabled {
     border-radius: 6px;
 }
 
-@keyframes shrink {
-    from {
-        transform: scaleX(1);
-    }
-    to {
-        transform: scaleX(0);
-    }
-}
-
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -143,4 +138,43 @@ button:disabled {
 
 .revealed > .incorrect {
     background: tomato;
+}
+
+#modal::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+}
+
+#modal {
+    min-width: 40%;
+    padding: 24px;
+    color: whitesmoke;
+    background: #292929;
+    border: none;
+    outline: none;
+    border-radius: 10px;
+
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    animation: modalIn 0.3s ease-out;
+}
+
+.modal-main {
+    gap: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-main > button {
+    margin-top: 8px;
+}
+
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        top: 60%;
+    }
 }
